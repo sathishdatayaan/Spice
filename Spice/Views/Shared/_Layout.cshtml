@@ -1,0 +1,130 @@
+﻿@using Spice.Utiliy
+@using Microsoft.AspNetCore.Http
+
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Spice</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @*<link rel="stylesheet" href="~/css/jquery-ui.css" />*@
+    <script src="https://kit.fontawesome.com/d857b17122.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.tiny.cloud/1/wql3eh7ov7utxyb5tou8uqeteoq9jla4r6nes8bevm5mbov7/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="~/js/jquery-ui.js" ></script>
+   
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Spice.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/jquery-ui.css"  />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.14.0/jquery.timepicker.js" />
+</head>
+<body class="search-background">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"> 
+                    <img src="~/Images/mild.png" />
+                    <img src="~/Images/spicy.png" />
+                    <img src="~/Images/verySpicy.png" />
+                    <label class="text-white" style="cursor:pointer ">Spice</label>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (User.IsInRole(SD.ManagerUser))
+                        {
+                            <li class="nav-item dropdown text-white-50">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Content Management 
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropDownMenuLink">
+                                    <a class="dropdown-item text-black" asp-action="Index" asp-controller="Category" asp-area="Admin" >Category</a>
+                                    <a class="dropdown-item text-black" asp-action="Index" asp-controller="SubCategory" asp-area="Admin" >Sub Category</a>
+                                    <a class="dropdown-item text-black" asp-action="Index" asp-controller="MenuItem" asp-area="Admin">MenuItem</a>
+                                    <a class="dropdown-item text-black" asp-action="Index" asp-controller="coupon" asp-area="Admin">Coupons</a>
+                                    <a class="dropdown-item text-black" asp-action="Index" asp-controller="User" asp-area="Admin">Users</a>
+                                </div>
+
+                            </li>
+                        }
+
+                        @if (User.IsInRole(SD.ManagerUser) || User.IsInRole(SD.CustomerEndUser) || User.IsInRole(SD.FrontDeskUser) || User.IsInRole(SD.KitchenUser))
+                        {
+                           <li class="nav-item">
+                                <a  asp-area="Customer" asp-controller="Cart" asp-action="OrderHistory" class="nav-link">
+                                 
+                                   Order History
+                            </a>
+                        </li> 
+                        }
+
+                        @if (User.IsInRole(SD.ManagerUser) || User.IsInRole(SD.KitchenUser) || User.IsInRole(SD.FrontDeskUser))
+                        {
+                            <li class="nav-item dropdown text-white-50">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropDownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Order
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropDownMenuLink">
+                                     @if (User.IsInRole(SD.ManagerUser) || User.IsInRole(SD.KitchenUser))
+                                        {
+                                            <a class="dropdown-item text-black" asp-action="ManageOrder" asp-controller="order" asp-area="Customer">Manage Order</a>
+                                        }
+                                    @if (User.IsInRole(SD.ManagerUser) || User.IsInRole(SD.FrontDeskUser))
+                                        {
+                                    <a class="dropdown-item text-black" asp-action="OrderPickup" asp-controller="order" asp-area="Customer" >Order Pickup</a>
+                                        }
+                                </div>
+
+                            </li>
+                        }
+
+                        @if (HttpContextAccessor.HttpContext.Session.GetInt32(@SD.ssShoppingCartCount) != null)
+                        {
+                            <li style="color:white">
+                                <a  asp-area="Customer" asp-controller="Cart" asp-action="Index" class="nav-link">
+                                    @{
+                                        var count = HttpContextAccessor.HttpContext.Session.GetInt32(@SD.ssShoppingCartCount);
+                                    }
+                                    <i class="fa-sharp fa-solid fa-cart-shopping"></i> &nbsp; (@count)
+                            </a>
+                        </li>
+                        }
+                        else{
+                        <li style="color:white">
+                                <a href="#" class="nav-link">
+                                    <i class="fa-sharp fa-solid fa-cart-shopping"></i> &nbsp; (0)
+                            </a>
+                        </li>
+                        } 
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+   
+    <footer class="border-top pl-3 footer text-white-50" style="background-color: black;">
+        <div class="container">
+            &copy; 2018 - Spice
+        </div>
+    </footer>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+     <script src="~/js/jquery-ui.js" ></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

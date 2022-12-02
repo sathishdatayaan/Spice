@@ -1,0 +1,69 @@
+﻿@model IEnumerable<MenuItem>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+<div class="border backgroundWhite">
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-secondary">Menu Item List</h2>
+        </div>
+        <div class="col-6 text-end">
+            <partial name="_CreateButtonPartial" />
+        </div>
+    </div>
+    <br />
+    <div>
+        @if (Model.Count() > 0)
+        {
+            <table class="table table-striped border">
+                <tr class="table-secondary">
+                    <th>
+                        @Html.DisplayNameFor(m => m.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(m => m.Price)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(m => m.CategoryId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(m => m.SubCategoryId)
+                    </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.Price)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.Category.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.SubCategory.Name)
+                        </td>
+                        <td>
+                            <partial name="_TableButtonPartial" model="item.Id" />
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <p> NO Category Exist</p>
+        }
+    </div>
+</div>
